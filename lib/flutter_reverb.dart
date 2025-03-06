@@ -34,7 +34,8 @@ class FlutterReverb implements ReverbService {
 
   @override
   void subscribe(String channelName, {bool isPrivate = false}) {
-    final channel = isPrivate ? '${options.privatePrefix}$channelName' : channelName;
+    final prefix = options.usePrefix ? options.privatePrefix : '';
+    final channel = isPrivate ? '$prefix$channelName' : channelName;
     final subscription = {
       "event": "pusher:subscribe",
       "data": {"channel": channel},

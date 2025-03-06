@@ -1,40 +1,108 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# 📡 Flutter Reverb WebSocket Client
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/tools/pub/writing-package-pages).
+A **Dart/Flutter WebSocket client** for **Laravel Reverb**, enabling seamless real-time communication with WebSockets.
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/to/develop-packages).
--->
+## 🚀 Features
+✔️ **Easy WebSocket Connection** with Laravel Reverb  
+✔️ **Authentication Support** (JWT, API Keys)  
+✔️ **Public & Private Channel Subscriptions**  
+✔️ **Real-time Event Handling**  
+✔️ **Lightweight & Easy to Use**
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+## 📦 Installation
 
-## Features
+Add **flutter_reverb** to your `pubspec.yaml`:
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
-
-## Getting started
-
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
-
-## Usage
-
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
-
-```dart
-const like = 'sample';
+```yaml
+dependencies:
+  flutter_reverb: latest_version
 ```
 
-## Additional information
+Run:
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
-# flutter_reverb
+```sh
+flutter pub get
+```
+
+## 🎯 Usage
+
+### 1️⃣ **Initialize the WebSocket Client**
+```dart
+import 'package:flutter_reverb/flutter_reverb.dart';
+
+final options = FlutterReverbOptions(
+  scheme: "ws", 
+  host: "your-server.com",
+  port: "6001",
+  appKey: "your-app-key", // Reverb app key
+  authUrl: "https://your-backend.com/broadcasting/auth", // optional, needed for private channels
+  authToken: "your-auth-token", // optional
+  privatePrefix: "private-", // default: "private-"
+  usePrivateChannelPrefix: true, // default: true
+);
+
+final reverb = FlutterReverb(options: options);
+```
+
+### 2️⃣ **Subscribe to Channels**
+```dart
+reverb.subscribe("public-channel");
+reverb.subscribe("private-channel", isPrivate: true);
+```
+
+### 3️⃣ **Listen for Messages**
+```dart
+reverb.listen((message) {
+  print("Received: ${message.event}, Data: ${message.data}");
+}, "public-channel");
+```
+
+### 4️⃣ **Authenticate Manually (If Needed)**
+```dart
+final authToken = await reverb.authenticate("socket-id", "private-channel");
+if (authToken != null) {
+  reverb.subscribe("private-channel", isPrivate: true);
+}
+```
+
+### 5️⃣ **Close Connection**
+```dart
+reverb.close();
+```
+
+## 🧪 Testing
+
+Unit tests are included and use `mockito` to simulate WebSocket interactions:
+
+```sh
+flutter test
+```
+
+## 🛠 Configuration
+
+| Parameter                 | Type      | Description                                                  |
+|---------------------------|----------|--------------------------------------------------------------|
+| `scheme`                  | String   | WebSocket scheme (`ws` or `wss`)                             |
+| `host`                    | String   | Server hostname                                              |
+| `port`                    | String   | Server port                                                  |
+| `appKey`                  | String   | Laravel Echo app key                                         |
+| `authUrl`                 | String?  | URL for authentication (private channels)                    |
+| `authToken`               | String?  | Token for authentication requests                            |
+| `privatePrefix`           | String   | Prefix for private channels (default: `private-`)            |
+| `usePrivateChannelPrefix` | bool     | Enable usage of prefix for private channel (default: `true`) |
+
+## 🤝 Contributing
+
+1. **Fork** the repo & clone it
+2. **Create** a new branch
+3. **Commit** your changes
+4. **Push** and open a **Pull Request**
+
+## 📄 License
+
+This package is **open-source** and licensed under the **MIT License**.
+
+## 📬 Support
+
+Found a bug? Have a feature request?  
+Open an **issue** or contribute to the project! 🚀  

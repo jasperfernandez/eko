@@ -9,6 +9,7 @@ class FlutterReverbOptions {
   final String? authUrl;
   final http.Client? httpClient;
   final String privatePrefix;
+  final bool usePrefix;
 
   FlutterReverbOptions({
     required this.scheme,
@@ -19,5 +20,6 @@ class FlutterReverbOptions {
     this.authUrl,
     this.httpClient,
     this.privatePrefix = 'private-',
+    this.usePrefix = true,
   });
 }
