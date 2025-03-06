@@ -73,8 +73,10 @@ class FlutterReverb implements ReverbService {
   Future<String?> _authenticate(String socketId, String channelName) async {
 
     try {
-      if (options.authUrl == null || options.authToken == null) {
+      if (options.authToken == null) {
         throw Exception('Auth Token is missing');
+      } else if(options.authUrl == null) {
+        throw Exception('Auth URL is missing');
       }
 
       // authToken can be a string or an async function that returns a string

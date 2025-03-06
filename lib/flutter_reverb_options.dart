@@ -16,7 +16,7 @@ class FlutterReverbOptions {
     required this.port,
     required this.appKey,
     this.authToken,
-    this.authUrl = '/broadcasting/auth',
+    this.authUrl,
     this.privatePrefix = 'private-',
     this.usePrefix = true,
   });
