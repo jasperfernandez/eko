@@ -7,8 +7,8 @@ import 'package:web_socket_channel/status.dart' as status;
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 abstract class ReverbService {
-  Future<String?> authenticate(String socketId, String channelName);
-  void subscribe(String channelName, {bool isPrivate = false});
+  Future<String?> _authenticate(String socketId, String channelName);
+  void _subscribe(String channelName, {bool isPrivate = false});
   void listen(void Function(dynamic) onData, String channelName);
   void close();
 }
@@ -33,7 +33,7 @@ class FlutterReverb implements ReverbService {
   }
 
   @override
-  void subscribe(String channelName, {bool isPrivate = false}) {
+  void _subscribe(String channelName, {bool isPrivate = false}) {
     final prefix = options.usePrefix ? options.privatePrefix : '';
     final channel = isPrivate ? '$prefix$channelName' : channelName;
     final subscription = {
@@ -44,7 +44,7 @@ class FlutterReverb implements ReverbService {
   }
 
   @override
-  void listen(void Function(dynamic) onData, String channelName) {
+  void listen(void Function(dynamic) onData, String channelName, {bool isPrivate = false}) {
     _channel.stream.listen(
           (message) async {
         _logger.i('Received message: $message');
@@ -54,9 +54,9 @@ class FlutterReverb implements ReverbService {
         if (response.event == 'pusher:connection_established') {
           final socketId = response.data?['socket_id'];
           if (socketId != null) {
-            final authToken = await authenticate(socketId, channelName);
+            final authToken = await _authenticate(socketId, channelName);
             if (authToken != null) {
-              subscribe(channelName, isPrivate: true);
+              _subscribe(channelName, isPrivate: isPrivate);
             }
           }
         } else if (response.event == 'pusher:ping') {
@@ -70,7 +70,7 @@ class FlutterReverb implements ReverbService {
   }
 
   @override
-  Future<String?> authenticate(String socketId, String channelName) async {
+  Future<String?> _authenticate(String socketId, String channelName) async {
     if (options.authUrl == null || options.authToken == null) {
       throw Exception('Authentication URL or Token is missing');
     }

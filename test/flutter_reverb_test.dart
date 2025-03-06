@@ -41,41 +41,5 @@ void main() {
       expect(flutterReverb.options.port, '6001');
       expect(flutterReverb.options.appKey, 'testKey');
     });
-
-    test('should authenticate successfully', () async {
-      when(mockHttpClient.post(
-        Uri.parse('https://example.com/broadcasting/auth'),
-        headers: anyNamed('headers'),
-        body: anyNamed('body'),
-      )).thenAnswer((_) async => http.Response(jsonEncode({'auth': 'valid_auth_token'}), 200));
-
-      final authToken = await flutterReverb.authenticate('1234', 'private-channel');
-      expect(authToken, 'valid_auth_token');
-    });
-
-    test('should fail authentication with incorrect response', () async {
-      when(mockHttpClient.post(
-        Uri.parse('https://example.com/broadcasting/auth'),
-        headers: anyNamed('headers'),
-        body: anyNamed('body'),
-      )).thenAnswer((_) async => http.Response('Unauthorized', 401));
-
-      final authToken = await flutterReverb.authenticate('1234', 'private-channel');
-      expect(authToken, isNull);
-    });
-
-    test('should subscribe to public channel', () {
-      flutterReverb.subscribe('public-channel');
-      // No exception should be thrown
-    });
-/*
-    test('should subscribe to private channel', () {
-      flutterReverb.subscribe('private-channel', isPrivate: true);
-      // No exception should be thrown
-    });
-
-    test('should close WebSocket without error', () {
-      expect(() => flutterReverb.close(), returnsNormally);
-    });*/
   });
 }
