@@ -71,12 +71,13 @@ class FlutterReverb implements ReverbService {
 
   @override
   Future<String?> _authenticate(String socketId, String channelName) async {
-    if (options.authUrl == null || options.authToken == null) {
-      throw Exception('Authentication URL or Token is missing');
-    }
 
     try {
-      final response = await (options.httpClient ?? http.Client()).post(
+      if (options.authUrl == null || options.authToken == null) {
+        throw Exception('Auth Token is missing');
+      }
+
+      final response = await (http.Client()).post(
         Uri.parse(options.authUrl!),
         headers: {'Authorization': 'Bearer ${options.authToken}'},
         body: {'socket_id': socketId, 'channel_name': channelName},

@@ -7,3 +7,6 @@
 - Changed `subscribe` method to be private.
 - Removed broken tests.
 - TODO: Rewrite tests.
+## 0.0.3
+- Removed option to provide own http client. Now using `http` package.
+- Small refactoring.

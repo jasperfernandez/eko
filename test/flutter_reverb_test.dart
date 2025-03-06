@@ -29,7 +29,6 @@ void main() {
         appKey: 'testKey',
         authToken: 'testToken',
         authUrl: 'https://example.com/broadcasting/auth',
-        httpClient: mockHttpClient,
       );
 
       flutterReverb = FlutterReverb(options: options);

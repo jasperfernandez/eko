@@ -44,20 +44,20 @@ final options = FlutterReverbOptions(
 final reverb = FlutterReverb(options: options);
 ```
 
-### 2️⃣ **Subscribe to Channels**
+### 2️⃣ **Listen for Messages**
 ```dart
-reverb.subscribe("public-channel");
-reverb.subscribe("private-channel", isPrivate: true);
-```
-
-### 3️⃣ **Listen for Messages**
-```dart
+// Public channel
 reverb.listen((message) {
   print("Received: ${message.event}, Data: ${message.data}");
-}, "public-channel");
+}, "public-channel", isPrivate: false);
+
+// Private channel
+reverb.listen((message) {
+print("Received: ${message.event}, Data: ${message.data}");
+}, "public-channel", isPrivate: true);
 ```
 
-### 4️⃣ **Authenticate Manually (If Needed)**
+### 3️⃣ **Authenticate Manually (If Needed)**
 ```dart
 final authToken = await reverb.authenticate("socket-id", "private-channel");
 if (authToken != null) {
@@ -65,7 +65,7 @@ if (authToken != null) {
 }
 ```
 
-### 5️⃣ **Close Connection**
+### 4️⃣ **Close Connection**
 ```dart
 reverb.close();
 ```

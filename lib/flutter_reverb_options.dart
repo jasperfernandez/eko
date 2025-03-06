@@ -7,7 +7,6 @@ class FlutterReverbOptions {
   final String appKey;
   final String? authToken;
   final String? authUrl;
-  final http.Client? httpClient;
   final String privatePrefix;
   final bool usePrefix;
 
@@ -17,8 +16,7 @@ class FlutterReverbOptions {
     required this.port,
     required this.appKey,
     this.authToken,
-    this.authUrl,
-    this.httpClient,
+    this.authUrl = '/broadcasting/auth',
     this.privatePrefix = 'private-',
     this.usePrefix = true,
   });
