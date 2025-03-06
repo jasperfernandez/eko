@@ -80,7 +80,7 @@ class FlutterReverb implements ReverbService {
       // authToken can be a string or an async function that returns a string
       var _token = options.authToken;
       if (options.authToken is Future<String?>) {
-        _token = await options.authToken();
+        _token = await options.authToken;
       } else if(options.authToken is String) {
         _token = options.authToken;
       } else {
