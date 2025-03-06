@@ -5,7 +5,7 @@ class FlutterReverbOptions {
   final String host;
   final String port;
   final String appKey;
-  final String? authToken;
+  final dynamic? authToken;
   final String? authUrl;
   final String privatePrefix;
   final bool usePrefix;

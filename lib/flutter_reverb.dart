@@ -77,9 +77,19 @@ class FlutterReverb implements ReverbService {
         throw Exception('Auth Token is missing');
       }
 
+      // authToken can be a string or an async function that returns a string
+      String _token = options.authToken;
+      if (options.authToken is Function) {
+        _token = await options.authToken();
+      } else if(options.authToken is String) {
+        _token = options.authToken;
+      } else {
+        throw Exception('Parameter authToken is not a string or a function');
+      }
+
       final response = await (http.Client()).post(
         Uri.parse(options.authUrl!),
-        headers: {'Authorization': 'Bearer ${options.authToken}'},
+        headers: {'Authorization': 'Bearer $_token'},
         body: {'socket_id': socketId, 'channel_name': channelName},
       );
 

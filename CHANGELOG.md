@@ -10,3 +10,5 @@
 ## 0.0.3
 - Removed option to provide own http client. Now using `http` package.
 - Small refactoring.
+## 0.0.4
+- Changed `FlutterReverbOptions.authToken` to 'dynamic' type. This way, it can be a `String` or a `Future<String>`.
