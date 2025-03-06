@@ -8,7 +8,7 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 
 abstract class ReverbService {
   Future<String?> _authenticate(String socketId, String channelName);
-  void _subscribe(String channelName, {bool isPrivate = false});
+  void _subscribe(String channelName,String broadcastAuthToken, {bool isPrivate = false});
   void listen(void Function(dynamic) onData, String channelName);
   void close();
 }
@@ -33,12 +33,12 @@ class FlutterReverb implements ReverbService {
   }
 
   @override
-  void _subscribe(String channelName, {bool isPrivate = false}) {
+  void _subscribe(String channelName, String broadcastAuthToken, {bool isPrivate = false}) {
     final prefix = options.usePrefix ? options.privatePrefix : '';
     final channel = isPrivate ? '$prefix$channelName' : channelName;
     final subscription = {
       "event": "pusher:subscribe",
-      "data": {"channel": channel},
+      "data": isPrivate ? {"channel": channel, "auth": broadcastAuthToken} : {"channel": channel},
     };
     _channel.sink.add(jsonEncode(subscription));
   }
@@ -56,7 +56,7 @@ class FlutterReverb implements ReverbService {
           if (socketId != null) {
             final authToken = await _authenticate(socketId, channelName);
             if (authToken != null) {
-              _subscribe(channelName, isPrivate: isPrivate);
+              _subscribe(channelName, authToken, isPrivate: isPrivate);
             }
           }
         } else if (response.event == 'pusher:ping') {
