@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:flutter_reverb/flutter_reverb_options.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -6,7 +5,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_reverb/flutter_reverb.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import 'flutter_reverb_test.mocks.dart';

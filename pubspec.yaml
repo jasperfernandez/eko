@@ -25,6 +25,8 @@ dev_dependencies:
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter packages.
+  async: any
+  stream_channel: any
 flutter:
 
   # To add assets to your package, add an assets section, like this:

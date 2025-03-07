@@ -1,11 +1,10 @@
-import 'package:http/http.dart' as http;
 
 class FlutterReverbOptions {
   final String scheme;
   final String host;
   final String port;
   final String appKey;
-  final dynamic? authToken;
+  final dynamic authToken;
   final String? authUrl;
   final String privatePrefix;
   final bool usePrefix;
