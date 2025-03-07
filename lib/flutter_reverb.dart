@@ -8,8 +8,8 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 
 abstract class ReverbService {
   Future<String?> _authenticate(String socketId, String channelName);
-  void _subscribe(String channelName, String? broadcastAuthToken);
-  void listen(void Function(dynamic) onData, String channelName);
+  void _subscribe(String channelName, String? broadcastAuthToken, {bool isPrivate = false});
+  void listen(void Function(dynamic) onData, String channelName, {bool isPrivate = false});
   void close();
 }
 
@@ -34,67 +34,73 @@ class FlutterReverb implements ReverbService {
 
   @override
   void _subscribe(String channelName, String? broadcastAuthToken, {bool isPrivate = false}) {
-    final subscription = {
-      "event": "pusher:subscribe",
-      "data": isPrivate ? {"channel": channelName, "auth": broadcastAuthToken} : {"channel": channelName},
-    };
-    _channel.sink.add(jsonEncode(subscription));
+    try {
+      final subscription = {
+        "event": "pusher:subscribe",
+        "data": isPrivate ? {"channel": channelName, "auth": broadcastAuthToken} : {"channel": channelName},
+      };
+      _channel.sink.add(jsonEncode(subscription));
+    } catch (e) {
+      _logger.e('Failed to subscribe to channel: $e');
+      rethrow;
+    }
   }
 
   @override
   void listen(void Function(dynamic) onData, String channelName, {bool isPrivate = false}) {
     try {
-      final prefix = options.usePrefix ? options.privatePrefix : '';
-      final fullChannelName = isPrivate ? '$prefix$channelName' : channelName;
+      final channelPrefix = options.usePrefix ? options.privatePrefix : '';
+      final fullChannelName = isPrivate ? '$channelPrefix$channelName' : channelName;
       _subscribe(channelName, null);
       _channel.stream.listen(
             (message) async {
-          _logger.i('Received message: $message');
-          final Map<String, dynamic> jsonMessage = jsonDecode(message);
-          final response = WebsocketResponse.fromJson(jsonMessage);
+          try {
+            final Map<String, dynamic> jsonMessage = jsonDecode(message);
+            final response = WebsocketResponse.fromJson(jsonMessage);
 
-          if (response.event == 'pusher:connection_established') {
-            final socketId = response.data?['socket_id'];
+            if (response.event == 'pusher:connection_established') {
+              final socketId = response.data?['socket_id'];
 
-            if(socketId == null) {
-              throw Exception('Socket ID is missing');
+              if (socketId == null) {
+                throw Exception('Socket ID is missing');
+              }
+
+              if (isPrivate) {
+                final authToken = await _authenticate(socketId, fullChannelName);
+                _subscribe(fullChannelName, authToken!, isPrivate: isPrivate);
+              } else {
+                _subscribe(fullChannelName, null, isPrivate: isPrivate);
+              }
+            } else if (response.event == 'pusher:ping') {
+              _channel.sink.add(jsonEncode({'event': 'pusher:pong'}));
             }
-
-            if (isPrivate) {
-              final authToken = await _authenticate(socketId, fullChannelName);
-              _subscribe(fullChannelName, authToken!, isPrivate: isPrivate);
-            } else {
-              _subscribe(fullChannelName, null, isPrivate: isPrivate);
-            }
-          } else if (response.event == 'pusher:ping') {
-            _channel.sink.add(jsonEncode({'event': 'pusher:pong'}));
+            onData(response);
+          } catch (e) {
+            _logger.e('Error processing message: $e');
           }
-          onData(response);
         },
         onError: (error) => _logger.e('WebSocket error: $error'),
         onDone: () => _logger.i('Connection closed: $channelName'),
       );
     } catch (e) {
-      _logger.e('Failed to connect to WebSocket: $e');
+      _logger.e('Failed to listen to WebSocket: $e');
       rethrow;
     }
   }
 
   @override
   Future<String?> _authenticate(String socketId, String channelName) async {
-
     try {
       if (options.authToken == null) {
         throw Exception('Auth Token is missing');
-      } else if(options.authUrl == null) {
+      } else if (options.authUrl == null) {
         throw Exception('Auth URL is missing');
       }
 
-      // authToken can be a string or an async function that returns a string
       var token = options.authToken;
       if (options.authToken is Future<String?>) {
         token = await options.authToken;
-      } else if(options.authToken is String) {
+      } else if (options.authToken is String) {
         token = options.authToken;
       } else {
         throw Exception('Parameter authToken is not a string or a function');
