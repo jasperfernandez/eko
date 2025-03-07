@@ -15,7 +15,10 @@ Add **flutter_reverb** to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  flutter_reverb: latest_version
+    flutter_reverb:
+    version: ^0.0.1
+    git:
+      url: https://github.com/Oltrematica/flutter_reverb.git
 ```
 
 Run:
