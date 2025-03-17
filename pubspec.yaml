@@ -1,7 +1,8 @@
 name: flutter_reverb
-description: "A new Flutter package project."
+description: "A simple flutter project to demonstrate the use of websockets with laravel reverb server."
 version: 0.0.1
-homepage:
+homepage: "https://github.com/Oltrematica/flutter_reverb"
+repository: "https://github.com/Oltrematica/flutter_reverb"
 
 environment:
   sdk: ^3.7.0
