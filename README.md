@@ -15,7 +15,7 @@ Add **flutter_reverb** to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-    simple_flutter_reverb: ^0.0.1
+    simple_flutter_reverb: ^0.0.2
 ```
 
 Run:
