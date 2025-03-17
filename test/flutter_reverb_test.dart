@@ -1,8 +1,8 @@
 
-import 'package:flutter_reverb/flutter_reverb_options.dart';
+import 'package:simple_flutter_reverb/flutter_reverb_options.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:flutter_reverb/flutter_reverb.dart';
+import 'package:simple_flutter_reverb/flutter_reverb.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';

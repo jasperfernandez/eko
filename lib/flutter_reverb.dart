@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter_reverb/flutter_reverb_options.dart';
+import 'package:simple_flutter_reverb/flutter_reverb_options.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:web_socket_channel/status.dart' as status;
