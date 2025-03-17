@@ -57,15 +57,7 @@ print("Received: ${message.event}, Data: ${message.data}");
 }, "public-channel", isPrivate: true);
 ```
 
-### 3️⃣ **Authenticate Manually (If Needed)**
-```dart
-final authToken = await reverb.authenticate("socket-id", "private-channel");
-if (authToken != null) {
-  reverb.subscribe("private-channel", isPrivate: true);
-}
-```
-
-### 4️⃣ **Close Connection**
+### 3️⃣ **Close Connection**
 ```dart
 reverb.close();
 ```
