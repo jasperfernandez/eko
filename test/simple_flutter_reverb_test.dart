@@ -1,26 +1,26 @@
 
-import 'package:simple_flutter_reverb/flutter_reverb_options.dart';
+import 'package:simple_flutter_reverb/simple_flutter_reverb_options.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:simple_flutter_reverb/flutter_reverb.dart';
+import 'package:simple_flutter_reverb/simple_flutter_reverb.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-import 'flutter_reverb_test.mocks.dart';
+import 'simple_flutter_reverb_test.mocks.dart';
 
 @GenerateMocks([http.Client, WebSocketChannel])
 void main() {
   group('FlutterReverb', () {
     late MockClient mockHttpClient;
     late MockWebSocketChannel mockWebSocket;
-    late FlutterReverb flutterReverb;
+    late SimpleFlutterReverb flutterReverb;
 
     setUp(() {
       mockHttpClient = MockClient();
       mockWebSocket = MockWebSocketChannel();
 
-      final options = FlutterReverbOptions(
+      final options = SimpleFlutterReverbOptions(
         scheme: 'ws',
         host: 'localhost',
         port: '6001',
@@ -29,7 +29,7 @@ void main() {
         authUrl: 'https://example.com/broadcasting/auth',
       );
 
-      flutterReverb = FlutterReverb(options: options);
+      flutterReverb = SimpleFlutterReverb(options: options);
     });
 
     test('should construct WebSocket URL correctly', () {

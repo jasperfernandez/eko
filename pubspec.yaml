@@ -1,6 +1,6 @@
 name: simple_flutter_reverb
 description: "A simple flutter project to demonstrate the use of websockets with laravel reverb server."
-version: 0.0.2
+version: 0.0.3
 homepage: "https://github.com/Oltrematica/flutter_reverb"
 repository: "https://github.com/Oltrematica/flutter_reverb"
 

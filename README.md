@@ -11,26 +11,32 @@ A **Dart/Flutter WebSocket client** for **Laravel Reverb**, enabling seamless re
 
 ## 📦 Installation
 
-Add **flutter_reverb** to your `pubspec.yaml`:
+Add **simple_flutter_reverb** to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
     simple_flutter_reverb: ^0.0.2
 ```
 
-Run:
+and run:
 
 ```sh
 flutter pub get
+```
+
+or install it from the command line:
+
+```sh
+flutter pub add simple_flutter_reverb
 ```
 
 ## 🎯 Usage
 
 ### 1️⃣ **Initialize the WebSocket Client**
 ```dart
-import 'package:flutter_reverb/flutter_reverb.dart';
+import 'package:simple_flutter_reverb/simple_flutter_reverb.dart';
 
-final options = FlutterReverbOptions(
+final options = SimpleFlutterReverbOptions(
   scheme: "ws", 
   host: "your-server.com",
   port: "6001",
@@ -83,10 +89,10 @@ flutter test
 | `privatePrefix`           | String   | Prefix for private channels (default: `private-`)           |
 | `usePrivateChannelPrefix` | bool     | Enable usage of prefix for private channel (default: `true`) |
 
-### FlutterReverbOptions example
+### SimpleFlutterReverbOptions example
 
 ```dart
-class FlutterReverbOptions {
+class SimpleFlutterReverbOptions {
   final String scheme;
   final String host;
   final String port;
@@ -96,7 +102,7 @@ class FlutterReverbOptions {
   final String privatePrefix;
   final bool usePrefix;
 
-  FlutterReverbOptions({
+  SimpleFlutterReverbOptions({
     required this.scheme,
     required this.host,
     required this.port,
@@ -114,8 +120,8 @@ class FlutterReverbOptions {
 ```dart
 import 'package:activeage_mobile/core/secure_storage/secure_storage.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_reverb/flutter_reverb.dart';
-import 'package:flutter_reverb/flutter_reverb_options.dart';
+import 'package:flutter_reverb/simple_flutter_reverb.dart';
+import 'package:flutter_reverb/simple_flutter_reverb_options.dart';
 
 import '../service_locator.dart';
 
@@ -125,13 +131,13 @@ class WebSocketService {
   final SecureStorageService _secureStorageService = sl<SecureStorageService>();
 
   // FlutterReverb instance for managing WebSocket connections
-  late final FlutterReverb _flutterReverb;
+  late final SimpleFlutterReverb _flutterReverb;
 
   /// Constructor to initialize the WebSocketService
   /// Sets up the FlutterReverb with the required configuration
   WebSocketService() {
     // Creating an options object for Reverb WebSocket connection
-    final FlutterReverbOptions _options = FlutterReverbOptions(
+    final SimpleFlutterReverbOptions _options = FlutterReverbOptions(
       // Reading environment variables from .env file for Reverb configuration
       scheme: dotenv.env['REVERB_SCHEME']!,
       host: dotenv.env['REVERB_HOST']!,

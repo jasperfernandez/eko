@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:simple_flutter_reverb/flutter_reverb_options.dart';
+import 'package:simple_flutter_reverb/simple_flutter_reverb_options.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:web_socket_channel/status.dart' as status;
@@ -13,12 +13,12 @@ abstract class ReverbService {
   void close();
 }
 
-class FlutterReverb implements ReverbService {
+class SimpleFlutterReverb implements ReverbService {
   late final WebSocketChannel _channel;
-  final FlutterReverbOptions options;
+  final SimpleFlutterReverbOptions options;
   final Logger _logger = Logger();
 
-  FlutterReverb({required this.options}) {
+  SimpleFlutterReverb({required this.options}) {
     try {
       final wsUrl = _constructWebSocketUrl();
       _channel = WebSocketChannel.connect(Uri.parse(wsUrl));

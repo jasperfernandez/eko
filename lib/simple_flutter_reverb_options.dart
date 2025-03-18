@@ -1,5 +1,5 @@
 
-class FlutterReverbOptions {
+class SimpleFlutterReverbOptions {
   final String scheme;
   final String host;
   final String port;
@@ -9,7 +9,7 @@ class FlutterReverbOptions {
   final String privatePrefix;
   final bool usePrefix;
 
-  FlutterReverbOptions({
+  SimpleFlutterReverbOptions({
     required this.scheme,
     required this.host,
     required this.port,
