@@ -13,13 +13,13 @@ void main() {
   group('FlutterReverb', () {
     late MockClient mockHttpClient;
     late MockWebSocketChannel mockWebSocket;
-    late SimpleFlutterReverb flutterReverb;
+    late Eko eko;
 
     setUp(() {
       mockHttpClient = MockClient();
       mockWebSocket = MockWebSocketChannel();
 
-      final options = SimpleFlutterReverbOptions(
+      final options = EkoOptions(
         scheme: 'ws',
         host: 'localhost',
         port: '6001',
@@ -28,14 +28,14 @@ void main() {
         authUrl: 'https://example.com/broadcasting/auth',
       );
 
-      flutterReverb = SimpleFlutterReverb(options: options);
+      eko = Eko(options: options);
     });
 
     test('should construct WebSocket URL correctly', () {
-      expect(flutterReverb.options.scheme, 'ws');
-      expect(flutterReverb.options.host, 'localhost');
-      expect(flutterReverb.options.port, '6001');
-      expect(flutterReverb.options.appKey, 'testKey');
+      expect(eko.options.scheme, 'ws');
+      expect(eko.options.host, 'localhost');
+      expect(eko.options.port, '6001');
+      expect(eko.options.appKey, 'testKey');
     });
   });
 }
