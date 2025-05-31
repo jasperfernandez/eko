@@ -1,13 +1,12 @@
-
-import 'package:simple_flutter_reverb/simple_flutter_reverb_options.dart';
+import 'package:eko/eko_options.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:simple_flutter_reverb/simple_flutter_reverb.dart';
+import 'package:eko/eko.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-import 'simple_flutter_reverb_test.mocks.dart';
+import 'eko_test.mocks.dart';
 
 @GenerateMocks([http.Client, WebSocketChannel])
 void main() {

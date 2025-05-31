@@ -1,24 +1,24 @@
 import 'dart:convert';
 
-import 'package:simple_flutter_reverb/simple_flutter_reverb_options.dart';
+import 'package:eko/eko_options.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:web_socket_channel/status.dart' as status;
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 abstract class ReverbService {
-  Future<String?> _authenticate(String socketId, String channelName);
-  void _subscribe(String channelName, String? broadcastAuthToken, {bool isPrivate = false});
+  Future<String?> authenticate(String socketId, String channelName);
+  void subscribe(String channelName, String? broadcastAuthToken, {bool isPrivate = false});
   void listen(void Function(dynamic) onData, String channelName, {bool isPrivate = false});
   void close();
 }
 
-class SimpleFlutterReverb implements ReverbService {
+class Eko implements ReverbService {
   late final WebSocketChannel _channel;
-  final SimpleFlutterReverbOptions options;
+  final EkoOptions options;
   final Logger _logger = Logger();
 
-  SimpleFlutterReverb({required this.options}) {
+  Eko({required this.options}) {
     try {
       final wsUrl = _constructWebSocketUrl();
       _channel = WebSocketChannel.connect(Uri.parse(wsUrl));
@@ -33,7 +33,7 @@ class SimpleFlutterReverb implements ReverbService {
   }
 
   @override
-  void _subscribe(String channelName, String? broadcastAuthToken, {bool isPrivate = false}) {
+  void subscribe(String channelName, String? broadcastAuthToken, {bool isPrivate = false}) {
     try {
       final subscription = {
         "event": "pusher:subscribe",
@@ -51,9 +51,9 @@ class SimpleFlutterReverb implements ReverbService {
     try {
       final channelPrefix = options.usePrefix ? options.privatePrefix : '';
       final fullChannelName = isPrivate ? '$channelPrefix$channelName' : channelName;
-      _subscribe(channelName, null);
+      subscribe(channelName, null, isPrivate: isPrivate);
       _channel.stream.listen(
-            (message) async {
+        (message) async {
           try {
             final Map<String, dynamic> jsonMessage = jsonDecode(message);
             final response = WebsocketResponse.fromJson(jsonMessage);
@@ -66,10 +66,10 @@ class SimpleFlutterReverb implements ReverbService {
               }
 
               if (isPrivate) {
-                final authToken = await _authenticate(socketId, fullChannelName);
-                _subscribe(fullChannelName, authToken!, isPrivate: isPrivate);
+                final authToken = await authenticate(socketId, fullChannelName);
+                subscribe(fullChannelName, authToken!, isPrivate: isPrivate);
               } else {
-                _subscribe(fullChannelName, null, isPrivate: isPrivate);
+                subscribe(fullChannelName, null, isPrivate: isPrivate);
               }
             } else if (response.event == 'pusher:ping') {
               _channel.sink.add(jsonEncode({'event': 'pusher:pong'}));
@@ -89,7 +89,7 @@ class SimpleFlutterReverb implements ReverbService {
   }
 
   @override
-  Future<String?> _authenticate(String socketId, String channelName) async {
+  Future<String?> authenticate(String socketId, String channelName) async {
     try {
       if (options.authToken == null) {
         throw Exception('Auth Token is missing');
@@ -108,8 +108,8 @@ class SimpleFlutterReverb implements ReverbService {
 
       final response = await (http.Client()).post(
         Uri.parse(options.authUrl!),
-        headers: {'Authorization': 'Bearer $token'},
-        body: {'socket_id': socketId, 'channel_name': channelName},
+        headers: {'Authorization': 'Bearer $token', 'Content-Type': 'application/json', 'Accept': 'application/json'},
+        body: jsonEncode({'socket_id': socketId, 'channel_name': channelName}),
       );
 
       if (response.statusCode == 200) {
@@ -140,9 +140,6 @@ class WebsocketResponse {
   WebsocketResponse({required this.event, this.data});
 
   factory WebsocketResponse.fromJson(Map<String, dynamic> json) {
-    return WebsocketResponse(
-      event: json['event'],
-      data: json['data'] != null ? jsonDecode(json['data']) : null,
-    );
+    return WebsocketResponse(event: json['event'], data: json['data'] != null ? jsonDecode(json['data']) : null);
   }
 }

@@ -1,5 +1,4 @@
-
-class SimpleFlutterReverbOptions {
+class EkoOptions {
   final String scheme;
   final String host;
   final String port;
@@ -9,7 +8,7 @@ class SimpleFlutterReverbOptions {
   final String privatePrefix;
   final bool usePrefix;
 
-  SimpleFlutterReverbOptions({
+  EkoOptions({
     required this.scheme,
     required this.host,
     required this.port,
