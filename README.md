@@ -1,9 +1,8 @@
-# 📡 Flutter Reverb WebSocket Client
-
-A **Dart/Flutter WebSocket client** for **Laravel Reverb**, enabling seamless real-time communication with WebSockets.
+# 📡 Eko a Flutter Laravel Reverb Client
 
 ## 🚀 Features
-✔️ **Easy WebSocket Connection** with Laravel Reverb  
+
+✔️ **Easy WebSocket Connection** to Laravel Reverb  
 ✔️ **Authentication Support** (JWT, API Keys)  
 ✔️ **Public & Private Channel Subscriptions**  
 ✔️ **Real-time Event Handling**  
@@ -11,11 +10,11 @@ A **Dart/Flutter WebSocket client** for **Laravel Reverb**, enabling seamless re
 
 ## 📦 Installation
 
-Add **simple_flutter_reverb** to your `pubspec.yaml`:
+Add **eko** to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-    simple_flutter_reverb: ^0.0.2
+  eko: ^0.0.1
 ```
 
 and run:
@@ -27,45 +26,47 @@ flutter pub get
 or install it from the command line:
 
 ```sh
-flutter pub add simple_flutter_reverb
+flutter pub add eko
 ```
 
 ## 🎯 Usage
 
 ### 1️⃣ **Initialize the WebSocket Client**
-```dart
-import 'package:simple_flutter_reverb/simple_flutter_reverb.dart';
 
-final options = SimpleFlutterReverbOptions(
-  scheme: "ws", 
-  host: "your-server.com",
-  port: "6001",
+```dart
+import 'package:eko/eko.dart';
+
+final options = EkoOptions(
+  scheme: "ws",
+  host: "localhost",
+  port: "8080",
   appKey: "your-app-key", // Reverb app key
-  authUrl: "https://your-backend.com/broadcasting/auth", // optional, needed for private channels
+  authUrl: "https://your-backend.com/api/broadcasting/auth", // optional, needed for private channels
   authToken: "your-auth-token", // optional
   privatePrefix: "private-", // default: "private-"
-  usePrivateChannelPrefix: true, // default: true
 );
 
-final reverb = FlutterReverb(options: options);
+final eko = Eko(options: options);
 ```
 
 ### 2️⃣ **Listen for Messages**
+
 ```dart
 // Public channel
-reverb.listen((message) {
+eko.listen((message) {
   print("Received: ${message.event}, Data: ${message.data}");
 }, "public-channel", isPrivate: false);
 
 // Private channel
-reverb.listen((message) {
+eko.listen((message) {
 print("Received: ${message.event}, Data: ${message.data}");
 }, "public-channel", isPrivate: true);
 ```
 
 ### 3️⃣ **Close Connection**
+
 ```dart
-reverb.close();
+eko.close();
 ```
 
 ## 🧪 Testing
@@ -78,21 +79,20 @@ flutter test
 
 ## 🛠 Configuration
 
-| Parameter                 | Type      | Description                                                 |
-|---------------------------|----------|-------------------------------------------------------------|
-| `scheme`                  | String   | WebSocket scheme (`ws` or `wss`)                            |
-| `host`                    | String   | Server hostname                                             |
-| `port`                    | String   | Server port                                                 |
-| `appKey`                  | String   | Laravel Echo app key                                        |
-| `authUrl`                 | String?  | URL for authentication (private channels)                   |
-| `authToken`               | String?  | Token for authentication requests (`sanctum` or similar)      |
-| `privatePrefix`           | String   | Prefix for private channels (default: `private-`)           |
-| `usePrivateChannelPrefix` | bool     | Enable usage of prefix for private channel (default: `true`) |
+| Parameter       | Type    | Description                                              |
+| --------------- | ------- | -------------------------------------------------------- |
+| `scheme`        | String  | WebSocket scheme (`ws` or `wss`)                         |
+| `host`          | String  | Server hostname                                          |
+| `port`          | String  | Server port                                              |
+| `appKey`        | String  | Laravel Echo app key                                     |
+| `authUrl`       | String? | URL for authentication (private channels)                |
+| `authToken`     | String? | Token for authentication requests (`sanctum` or similar) |
+| `privatePrefix` | String  | Prefix for private channels (default: `private-`)        |
 
-### SimpleFlutterReverbOptions example
+### EkoOptions example
 
 ```dart
-class SimpleFlutterReverbOptions {
+class EkoOptions {
   final String scheme;
   final String host;
   final String port;
@@ -102,7 +102,7 @@ class SimpleFlutterReverbOptions {
   final String privatePrefix;
   final bool usePrefix;
 
-  SimpleFlutterReverbOptions({
+  EkoOptions({
     required this.scheme,
     required this.host,
     required this.port,
@@ -114,84 +114,3 @@ class SimpleFlutterReverbOptions {
   });
 }
 ```
-
-## Usage Example
-
-```dart
-import 'package:activeage_mobile/core/secure_storage/secure_storage.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_reverb/simple_flutter_reverb.dart';
-import 'package:flutter_reverb/simple_flutter_reverb_options.dart';
-
-import '../service_locator.dart';
-
-/// WebSocketService manages communication with the Reverb WebSocket service.
-class WebSocketService {
-  // SecureStorageService instance to retrieve access tokens for authentication
-  final SecureStorageService _secureStorageService = sl<SecureStorageService>();
-
-  // FlutterReverb instance for managing WebSocket connections
-  late final SimpleFlutterReverb _flutterReverb;
-
-  /// Constructor to initialize the WebSocketService
-  /// Sets up the FlutterReverb with the required configuration
-  WebSocketService() {
-    // Creating an options object for Reverb WebSocket connection
-    final SimpleFlutterReverbOptions _options = FlutterReverbOptions(
-      // Reading environment variables from .env file for Reverb configuration
-      scheme: dotenv.env['REVERB_SCHEME']!,
-      host: dotenv.env['REVERB_HOST']!,
-      port: dotenv.env['REVERB_PORT']!,
-      appKey: dotenv.env['REVERB_APP_KEY']!,
-      authUrl: dotenv.env['REVERB_AUTH_URL']!, // URL for authentication (private channels) (Documentation: https://laravel.com/docs/11.x/broadcasting#authorizing-channels)
-      privatePrefix: 'private-', // Prefix for private channels (Laravel default prefix is 'private-')
-      // Retrieving the access token from secure storage for authentication
-      authToken: _secureStorageService.getAccessToken(),
-    );
-
-    // Initializing FlutterReverb with the provided options
-    _flutterReverb = FlutterReverb(options: _options);
-  }
-
-  /// Listens to a public channel and calls the onData callback with the received data.
-  /// 
-  /// [onData] - A callback function that will be invoked with the data from the channel.
-  /// [channel] - The name of the public channel to listen to.
-  void listenPublicChannel(void Function(dynamic) onData, String channel) {
-    // Subscribing to the public channel
-    _flutterReverb.listen(onData, channel);
-  }
-
-  /// Listens to a private channel and calls the onData callback with the received data.
-  /// 
-  /// [onData] - A callback function that will be invoked with the data from the channel.
-  /// [channel] - The name of the private channel to listen to.
-  void listenPrivateChannel(void Function(dynamic) onData, String channel) {
-    // Subscribing to the private channel by passing `isPrivate: true`
-    _flutterReverb.listen(onData, channel, isPrivate: true);
-  }
-
-}
-
-/// Uncommented legacy code for reference (if needed later):
-/// This section of code is an alternative approach using WebSocketChannel for managing WebSocket communication.
-/// It subscribes to both public and private channels, handles authentication, and includes error handling for WebSocket connections.
-
-
-```
-
-## 🤝 Contributing
-
-1. **Fork** the repo & clone it
-2. **Create** a new branch
-3. **Commit** your changes
-4. **Push** and open a **Pull Request**
-
-## 📄 License
-
-This package is **open-source** and licensed under the **MIT License**.
-
-## 📬 Support
-
-Found a bug? Have a feature request?  
-Open an **issue** or contribute to the project! 🚀  

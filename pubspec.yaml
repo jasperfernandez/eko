@@ -1,6 +1,6 @@
 name: eko
 description: 'Eko for connecting your flutter to laravel reverb.'
-version: 0.0.0
+version: 0.0.1
 repository: 'https://github.com/jasperfernandez/eko'
 
 environment:
